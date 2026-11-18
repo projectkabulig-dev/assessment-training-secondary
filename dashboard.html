@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="fil">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Live Dashboard · NAT G12 21st Century Skills</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  body{background:#0b1020;color:#e5e7eb;background-image:radial-gradient(900px 500px at 100% -10%,rgba(79,70,229,.35),transparent 60%),radial-gradient(800px 500px at -10% 0%,rgba(6,182,212,.22),transparent 55%)}
+  .topbar{background:rgba(11,16,32,.85);border-bottom:1px solid #1f2a44}
+  .brand{color:#fff} .brand small{color:#94a3b8}
+  .home-btn{background:#111a33;color:#e5e7eb;border-color:#26365c}
+  .home-btn:hover{background:var(--brand);border-color:var(--brand)}
+  .dwrap{max-width:1240px;margin:0 auto;padding:20px 16px 70px}
+  .panel{background:#111a33;border:1px solid #1f2a44;border-radius:20px;padding:20px 22px;box-shadow:0 12px 30px -16px rgba(0,0,0,.7)}
+  .panel h3{margin:0 0 12px;font-size:16px;color:#fff;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .panel h3 small{font-weight:500;color:#94a3b8;font-size:12px}
+  .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px}
+  .kpi{background:#111a33;border:1px solid #1f2a44;border-radius:18px;padding:16px 18px}
+  .kpi .v{font-size:38px;font-weight:800;line-height:1.1;color:#fff;font-variant-numeric:tabular-nums}
+  .kpi .l{font-size:12px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+  .kpi.stuck{background:linear-gradient(135deg,#7f1d1d,#b91c1c);border-color:#ef4444}
+  .kpi.stuck .l{color:#fecaca}
+  .kpi.stuck.zero{background:#111a33;border-color:#1f2a44}.kpi.stuck.zero .l{color:#94a3b8}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+  @media(max-width:900px){.row2{grid-template-columns:1fr}}
+  .live{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;color:#86efac}
+  .live i{width:10px;height:10px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.7);animation:ping 1.6s infinite}
+  .live.off{color:#fca5a5}.live.off i{background:#ef4444;animation:none}
+  @keyframes ping{0%{box-shadow:0 0 0 0 rgba(34,197,94,.7)}70%{box-shadow:0 0 0 10px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+  .dbtn{border:1px solid #2b3b66;background:#16224a;color:#e5e7eb;padding:9px 14px;border-radius:12px;font-weight:600;font-size:13px}
+  .dbtn:hover{background:#1e2d63}
+  .dbtn.pri{background:linear-gradient(135deg,#4f46e5,#7c3aed);border:0}
+  .dbtn.dng{border-color:#7f1d1d;color:#fca5a5}
+  .seg{display:inline-flex;background:#0b1226;border:1px solid #26365c;border-radius:10px;overflow:hidden}
+  .seg button{border:0;background:none;color:#94a3b8;padding:6px 12px;font-size:12px;font-weight:600}
+  .seg button.on{background:#4f46e5;color:#fff}
+
+  /* score bands */
+  .bands{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:end;height:230px}
+  .band{display:flex;flex-direction:column;justify-content:flex-end;height:100%;text-align:center}
+  .band .col{border-radius:14px 14px 4px 4px;min-height:6px;transition:height .5s}
+  .band .n{font-size:28px;font-weight:800;color:#fff;margin-bottom:4px}
+  .band .p{font-size:12px;color:#94a3b8;margin-bottom:6px}
+  .band .lb{margin-top:8px;font-weight:700;font-size:14px;color:#cbd5e1}
+  .b1 .col{background:linear-gradient(180deg,#f87171,#b91c1c)} .b2 .col{background:linear-gradient(180deg,#fbbf24,#b45309)} .b3 .col{background:linear-gradient(180deg,#34d399,#047857)}
+
+  /* items */
+  .irow{display:grid;grid-template-columns:34px 78px 1fr 190px 74px;gap:12px;align-items:center;padding:9px 6px;border-top:1px solid #1b2748;cursor:pointer}
+  .irow:first-of-type{border-top:0}
+  .irow:hover{background:#0f1a3a}
+  .inum{font-weight:800;color:#a5b4fc}
+  .ichip{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:99px;color:#fff;text-align:center}
+  .ichip.English{background:var(--eng)}.ichip.Science{background:var(--sci)}.ichip.Math{background:var(--mat)}
+  .iskill{font-size:12.5px;color:#cbd5e1;line-height:1.25}
+  .iskill small{display:block;color:#64748b;font-size:11px}
+  .prog{height:14px;border-radius:99px;background:#0b1226;overflow:hidden;position:relative}
+  .prog i{display:block;height:100%;background:linear-gradient(90deg,#4f46e5,#06b6d4);border-radius:99px;transition:width .5s}
+  .pnote{font-size:11.5px;color:#94a3b8;margin-top:3px;display:flex;justify-content:space-between}
+  .stk{font-size:11px;font-weight:700;text-align:center;border-radius:99px;padding:3px 0;background:#16224a;color:#64748b}
+  .stk.on{background:#b91c1c;color:#fff}
+  .idet{display:none;grid-column:1/-1;padding:8px 10px 12px 46px}
+  .idet.open{display:block}
+  .dist{display:grid;grid-template-columns:24px 1fr 90px;gap:8px;align-items:center;margin:4px 0;font-size:12.5px}
+  .dist .tr{height:12px;border-radius:99px;background:#0b1226;overflow:hidden}
+  .dist .fl{height:100%;background:#475569;border-radius:99px}
+  .dist.key .fl{background:#22c55e}.dist.key b{color:#86efac}
+  .dist span.t{color:#94a3b8;font-size:11.5px}
+  .qtxt{font-size:12.5px;color:#94a3b8;margin-bottom:6px}
+
+  /* stuck / table */
+  .slist{display:grid;gap:8px;max-height:320px;overflow:auto}
+  .sitem{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;background:#1b1330;border:1px solid #7f1d1d}
+  .sitem.inact{background:#1a2036;border-color:#334155}
+  .sitem .tm{margin-left:auto;font-weight:800;color:#fca5a5;font-variant-numeric:tabular-nums}
+  .sitem.inact .tm{color:#94a3b8}
+  .sitem small{color:#94a3b8;display:block}
+  .empty{color:#64748b;font-size:14px;padding:10px 2px}
+  table.pt{width:100%;border-collapse:collapse;font-size:13px}
+  table.pt th{text-align:left;color:#94a3b8;font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:8px 8px;position:sticky;top:0;background:#111a33}
+  table.pt td{padding:8px;border-top:1px solid #1b2748;color:#e2e8f0}
+  .st{font-size:11px;font-weight:700;padding:3px 9px;border-radius:99px}
+  .st.done{background:#064e3b;color:#6ee7b7}.st.taking{background:#1e3a8a;color:#93c5fd}.st.registered{background:#374151;color:#d1d5db}.st.over{background:#7f1d1d;color:#fecaca}
+  .scrollbox{max-height:420px;overflow:auto;border-radius:12px}
+  .search{width:240px;background:#0b1226;border:1px solid #26365c;color:#e5e7eb;border-radius:10px;padding:8px 12px;font:inherit;font-size:13px}
+
+  /* PIN gate */
+  .gate{position:fixed;inset:0;z-index:200;background:#0b1020;display:grid;place-items:center;padding:16px}
+  .gate .box{background:#111a33;border:1px solid #26365c;border-radius:24px;padding:32px;max-width:380px;width:100%;text-align:center}
+  .gate input{width:100%;text-align:center;font:inherit;font-size:24px;letter-spacing:8px;padding:12px;border-radius:14px;background:#0b1226;border:1.5px solid #26365c;color:#fff;margin:16px 0 6px}
+  .toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#16224a;border:1px solid #4f46e5;color:#fff;padding:12px 20px;border-radius:14px;z-index:300;font-weight:600}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="box">
+    <div style="font-size:42px">🔐</div>
+    <h2 style="margin:6px 0 0;color:#fff">Live Dashboard</h2>
+    <p style="margin:4px 0 0;color:#94a3b8;font-size:14px">Ilagay ang PIN ng facilitator.</p>
+    <input id="pin" type="password" inputmode="numeric" autocomplete="off" placeholder="••••">
+    <div class="err" id="pinErr"></div>
+    <button class="btn" id="pinGo" style="width:100%">Buksan</button>
+    <p style="margin:16px 0 0"><a href="index.html" style="color:#a5b4fc;font-size:13px">⌂ Bumalik sa Home</a></p>
+  </div>
+</div>
+
+<header class="topbar">
+  <a class="home-btn" href="index.html" aria-label="Home">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5 10v10h5v-6h4v6h5V10"/></svg>Home
+  </a>
+  <div class="brand">Live Dashboard<small id="evt"></small></div>
+  <div class="spacer"></div>
+  <span class="live" id="live"><i></i><span id="liveTxt">Kumokonekta…</span></span>
+  <span class="badge" id="modeBadge"></span>
+</header>
+
+<main class="dwrap">
+  <div class="panel" style="margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <div>
+      <div style="font-size:20px;font-weight:800;color:#fff" id="dTitle"></div>
+      <div style="color:#94a3b8;font-size:13px" id="dSub"></div>
+    </div>
+    <div class="spacer"></div>
+    <div class="actions">
+      <button class="dbtn pri" id="btnPPT">📊 Generate PowerPoint</button>
+      <button class="dbtn" id="btnCSV">⬇ CSV</button>
+      <button class="dbtn dng" id="btnClear">🗑 Bagong batch</button>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi"><div class="l">Nagrehistro</div><div class="v" id="kReg">0</div></div>
+    <div class="kpi"><div class="l">Sumasagot ngayon</div><div class="v" id="kTaking">0</div></div>
+    <div class="kpi"><div class="l">Tapos na</div><div class="v" id="kDone">0</div></div>
+    <div class="kpi"><div class="l">Average score (/15)</div><div class="v" id="kAvg">–</div></div>
+    <div class="kpi stuck zero" id="kStuckBox"><div class="l">Stuck (&gt; <span id="limTxt">60</span>s sa item)</div><div class="v" id="kStuck">0</div></div>
+  </div>
+
+  <div class="row2">
+    <div class="panel">
+      <h3>Distribution ng score <small id="bandNote"></small>
+        <span class="seg" style="margin-left:auto"><button id="scAll" class="on">Live (lahat)</button><button id="scDone">Tapos na lang</button></span></h3>
+      <div class="bands" id="bands"></div>
+    </div>
+    <div class="panel">
+      <h3>Stuck / lampas sa oras <small>live, kada segundo</small></h3>
+      <div class="slist" id="stuckList"></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:16px">
+    <h3>Bawat item <small>nakasagot · nasa item ngayon · stuck · i-click ang item para sa A–D</small></h3>
+    <div id="items"></div>
+  </div>
+
+  <div class="panel" style="margin-top:16px">
+    <h3>Mga participant <input class="search" id="search" placeholder="Hanapin ang pangalan, school, district…" style="margin-left:auto"></h3>
+    <div class="scrollbox"><table class="pt"><thead><tr><th>Pangalan</th><th>District</th><th>Paaralan</th><th>Status</th><th>Item</th><th>Nasagot</th><th>Score</th><th>Oras sa item</th></tr></thead><tbody id="ptb"></tbody></table></div>
+  </div>
+</main>
+
+<script src="lib/pptxgen.bundle.js"></script>
+<script src="config.js"></script>
+<script src="items.js"></script>
+<script src="api.js"></script>
+<script src="deck.js"></script>
+<script>
+(function(){
+  const C = window.CONFIG, ITEMS = window.ITEMS, N = ITEMS.length, LIM = C.SECONDS_PER_ITEM, INACTIVE = 300;
+  const $ = id => document.getElementById(id);
+  let PIN = sessionStorage.getItem("nat21_pin") || "";
+  let DATA = { rows: [], srvNow: Date.now(), fetched: Date.now() };
+  let scope = "all", open = new Set(), timer = null, filter = "";
+
+  $("evt").textContent = C.EVENT;
+  $("dTitle").textContent = C.TITLE; $("dSub").textContent = C.SUBTITLE;
+  $("limTxt").textContent = LIM;
+  const mb = $("modeBadge"); mb.textContent = Api.mode === "live" ? "LIVE · Google Sheet" : "DEMO MODE"; mb.className = "badge " + (Api.mode === "live" ? "live" : "demo");
+
+  const srvNow = () => DATA.srvNow + (Date.now() - DATA.fetched);
+  const secOn = r => Math.max(0, Math.round((srvNow() - r.itemStart) / 1000));
+  const isTaking = r => r.status === "taking" && r.current >= 0 && r.current < N;
+  const mmss = s => Math.floor(s/60) + ":" + String(s%60).padStart(2,"0");
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+  function toast(t){ const d = document.createElement("div"); d.className = "toast"; d.textContent = t; document.body.appendChild(d); setTimeout(() => d.remove(), 3200); }
+
+  /* ---------- PIN gate ---------- */
+  async function unlock(pin){
+    PIN = pin;
+    try {
+      const r = await Api.live(PIN);
+      if (!r.ok) { $("pinErr").textContent = r.error || "Maling PIN"; return false; }
+      sessionStorage.setItem("nat21_pin", PIN);
+      $("gate").classList.add("hide");
+      apply(r); startLoop();
+      return true;
+    } catch (e) { $("pinErr").textContent = "Hindi maabot ang server. Tingnan ang APPS_SCRIPT_URL."; return false; }
+  }
+  $("pinGo").onclick = () => unlock($("pin").value.trim());
+  $("pin").addEventListener("keydown", e => { if (e.key === "Enter") $("pinGo").click(); });
+  if (Api.mode === "demo") { $("gate").classList.add("hide"); unlock(""); }
+  else if (PIN) unlock(PIN).then(ok => { if (!ok) $("gate").classList.remove("hide"); });
+
+  /* ---------- polling ---------- */
+  function apply(r){ DATA = { rows: r.rows || [], srvNow: r.now, fetched: Date.now() }; render(); setLive(true); }
+  function setLive(ok){
+    $("live").className = "live" + (ok ? "" : " off");
+    $("liveTxt").textContent = ok ? "LIVE · " + new Date().toLocaleTimeString() : "Walang koneksyon, nagre-retry…";
+  }
+  async function poll(){ try { const r = await Api.live(PIN); if (r.ok) apply(r); else setLive(false); } catch(e){ setLive(false); } }
+  function startLoop(){
+    if (timer) return;
+    timer = setInterval(poll, C.POLL_MS);
+    setInterval(renderLiveBits, 1000);
+  }
+
+  /* ---------- render ---------- */
+  function render(){
+    const rows = DATA.rows;
+    const taking = rows.filter(isTaking), done = rows.filter(r => r.status === "done");
+    $("kReg").textContent = rows.length; $("kTaking").textContent = taking.length; $("kDone").textContent = done.length;
+    const pool = done.length ? done : rows.filter(r => r.status !== "registered");
+    $("kAvg").textContent = pool.length ? (pool.reduce((a, r) => a + r.score, 0) / pool.length).toFixed(1) : "–";
+    renderBands(); renderItems(); renderLiveBits(); renderTable();
+  }
+
+  function renderBands(){
+    let pool = DATA.rows.filter(r => r.status !== "registered");
+    if (scope === "done") pool = pool.filter(r => r.status === "done");
+    const b = [0, 0, 0], z = pool.filter(r => r.score === 0).length;
+    pool.forEach(r => { if (r.score >= 11) b[2]++; else if (r.score >= 6) b[1]++; else if (r.score >= 1) b[0]++; });
+    const tot = Math.max(1, b[0] + b[1] + b[2]), mx = Math.max(1, ...b);
+    const lab = ["1 – 5", "6 – 10", "11 – 15"];
+    $("bands").innerHTML = b.map((n, i) => `<div class="band b${i+1}"><div class="n">${n}</div><div class="p">${Math.round(n / tot * 100)}%</div>
+      <div class="col" style="height:${Math.max(3, n / mx * 150)}px"></div><div class="lb">${lab[i]}</div></div>`).join("");
+    $("bandNote").textContent = (scope === "all" ? "running score ng lahat ng nagsimula" : "final score ng natapos") + (z ? ` · score 0: ${z}` : "");
+  }
+
+  function renderItems(){
+    const rows = DATA.rows;
+    $("items").innerHTML = ITEMS.map((it, i) => {
+      const ans = rows.filter(r => r.answers[i]), n = ans.length;
+      const reg = Math.max(1, rows.filter(r => r.status !== "registered").length);
+      const dist = { A:0, B:0, C:0, D:0 }; ans.forEach(r => dist[r.answers[i]]++);
+      const corr = n ? Math.round(dist[it.key] / n * 100) : null;
+      const here = rows.filter(r => isTaking(r) && r.current === i).length;
+      const stk = rows.filter(r => isTaking(r) && r.current === i && secOn(r) > LIM && secOn(r) <= INACTIVE).length;
+      const det = ["A","B","C","D"].map((L, k) => `<div class="dist ${L === it.key ? "key" : ""}"><b>${L}${L === it.key ? " ✓" : ""}</b>
+        <div class="tr"><div class="fl" style="width:${n ? dist[L] / n * 100 : 0}%"></div></div><span class="t">${dist[L]} (${n ? Math.round(dist[L] / n * 100) : 0}%)</span></div>`).join("");
+      return `<div class="irow" data-i="${i}"><div class="inum">${i+1}</div><div class="ichip ${it.subject}">${it.subject}</div>
+        <div class="iskill">${esc(it.skill)}<small>${esc(it.subskill)}</small></div>
+        <div><div class="prog"><i style="width:${Math.min(100, n / reg * 100)}%"></i></div>
+          <div class="pnote"><span><b style="color:#fff">${n}</b> nakasagot</span><span>${corr == null ? "–" : corr + "% tama"} · nasa item: ${here}</span></div></div>
+        <div class="stk ${stk ? "on" : ""}">${stk ? "⚠ " + stk + " stuck" : "ok"}</div>
+        <div class="idet ${open.has(i) ? "open" : ""}"><div class="qtxt">${esc(it.q)}</div>${det}</div></div>`;
+    }).join("");
+    document.querySelectorAll(".irow").forEach(el => el.onclick = () => {
+      const i = +el.dataset.i; open.has(i) ? open.delete(i) : open.add(i); renderItems();
+    });
+  }
+
+  function renderLiveBits(){
+    const rows = DATA.rows;
+    const over = rows.filter(r => isTaking(r) && secOn(r) > LIM).sort((a, b) => secOn(b) - secOn(a));
+    const stuck = over.filter(r => secOn(r) <= INACTIVE), inact = over.filter(r => secOn(r) > INACTIVE);
+    $("kStuck").textContent = stuck.length;
+    $("kStuckBox").classList.toggle("zero", stuck.length === 0);
+    const mk = (r, cls) => `<div class="sitem ${cls}"><div><b>${esc(r.name)}</b><small>${esc(r.school)} · ${esc(r.district)}</small></div>
+      <div style="margin-left:auto;text-align:right"><div class="tm">${mmss(secOn(r))}</div><small>Item ${r.current + 1}</small></div></div>`;
+    $("stuckList").innerHTML = (stuck.length || inact.length)
+      ? stuck.map(r => mk(r, "")).join("") + (inact.length ? `<div class="empty">Walang galaw nang higit 5 minuto (posibleng umalis o nawalan ng signal):</div>` + inact.map(r => mk(r, "inact")).join("") : "")
+      : `<div class="empty">✅ Walang lampas sa ${LIM} segundo sa kasalukuyang item.</div>`;
+    document.querySelectorAll("#ptb [data-live]").forEach(td => {
+      const r = rows.find(x => x.id === td.dataset.live); if (!r) return;
+      td.innerHTML = isTaking(r) ? `<span style="color:${secOn(r) > LIM ? "#fca5a5" : "#cbd5e1"};font-weight:700">${mmss(secOn(r))}</span>` : "–";
+    });
+  }
+
+  function renderTable(){
+    const q = filter.toLowerCase();
+    const rows = DATA.rows.filter(r => !q || (r.name + r.school + r.district).toLowerCase().includes(q))
+      .sort((a, b) => (b.updated || 0) - (a.updated || 0));
+    $("ptb").innerHTML = rows.map(r => {
+      const answered = r.answers.filter(Boolean).length;
+      const over = isTaking(r) && secOn(r) > LIM;
+      const stt = r.status === "done" ? ["done", "Tapos"] : over ? ["over", "Stuck"] : r.status === "taking" ? ["taking", "Sumasagot"] : ["registered", "Nakarehistro"];
+      return `<tr><td><b>${esc(r.name)}</b></td><td>${esc(r.district)}</td><td>${esc(r.school)}</td><td><span class="st ${stt[0]}">${stt[1]}</span></td>
+        <td>${r.status === "done" ? "–" : r.current >= 0 ? r.current + 1 : "–"}</td><td>${answered}/${N}</td><td><b>${r.score}</b></td><td data-live="${esc(r.id)}"></td></tr>`;
+    }).join("") || `<tr><td colspan="8" class="empty">Wala pang participant.</td></tr>`;
+  }
+
+  /* ---------- controls ---------- */
+  $("scAll").onclick = () => { scope = "all"; $("scAll").classList.add("on"); $("scDone").classList.remove("on"); renderBands(); };
+  $("scDone").onclick = () => { scope = "done"; $("scDone").classList.add("on"); $("scAll").classList.remove("on"); renderBands(); };
+  $("search").oninput = e => { filter = e.target.value; renderTable(); renderLiveBits(); };
+
+  $("btnPPT").onclick = () => {
+    const done = DATA.rows.filter(r => r.status === "done");
+    if (!done.length) return toast("Wala pang natapos na participant.");
+    try {
+      toast("Ginagawa ang PowerPoint… (" + done.length + " na natapos)");
+      window.buildDeck(done);
+    } catch (e) { console.error(e); toast("May error sa paggawa ng PowerPoint: " + e.message); }
+  };
+
+  $("btnCSV").onclick = () => {
+    const head = ["Name","School","District","Status","Score","English","Science","Math","TotalSecs"]
+      .concat(ITEMS.map((_, i) => "Q" + (i+1))).concat(ITEMS.map((_, i) => "T" + (i+1)));
+    const lines = [head].concat(DATA.rows.map(r => [r.name, r.school, r.district, r.status, r.score, r.eng, r.sci, r.math, r.totalSecs]
+      .concat(r.answers).concat(r.times.map(t => t == null ? "" : t))));
+    const csv = lines.map(l => l.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(",")).join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(["﻿" + csv], { type: "text/csv" }));
+    a.download = "NAT21_results_" + new Date().toISOString().slice(0, 10) + ".csv"; a.click();
+  };
+
+  $("btnClear").onclick = async () => {
+    if (!confirm("Mag-uumpisa ng BAGONG BATCH?\n\nAng kasalukuyang data ay ililipat sa 'Archive' sheet (hindi mabubura) at magiging blangko ang dashboard.")) return;
+    const r = await Api.clear(PIN);
+    if (r.ok) { toast("Nailipat sa Archive. Blangko na ang dashboard."); poll(); } else toast("Hindi nagawa: " + (r.error || ""));
+  };
+})();
+</script>
+</body>
+</html>
