@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NAT Grade 12 · 21st Century Skills — Sample Online Test</title>
-<link rel="stylesheet" href="style.css?v=20261119b">
+<link rel="stylesheet" href="style.css?v=20261119d">
 </head>
 <body>
 
@@ -42,7 +42,7 @@
       <h2 style="margin:0 0 4px">Bago ka magsimula</h2>
       <p style="margin:0;color:var(--ink2)">Basahin ang mga panuto.</p>
       <ul class="rules">
-        <li><i>1</i><div><b>Isang beses lang</b> ang pagsagot. Ilagay ang tamang pangalan, paaralan at district.</div></li>
+        <li><i>1</i><div><b>Isang beses lang</b> ang pagsagot. Ilagay ang tamang pangalan, municipality at paaralan.</div></li>
         <li><i>2</i><div>May <b id="r60">60 segundo</b> bawat item. Lalabas ang <b>babala</b> kapag <span id="rWarn">10</span> segundo na lang ang natitira.</div></li>
         <li><i>3</i><div>Kapag lampas sa 1 minuto, <b>hindi ka awtomatikong ililipat</b>. Magpapatuloy ang oras bilang <b>OVERTIME</b>, at mamarkahan ito sa resulta. Pumili na ng sagot at magpatuloy.</div></li>
         <li><i>4</i><div>Piliin ang <b>pinakamainam na sagot</b>, pagkatapos pindutin ang <b>Susunod</b>. <b>Hindi na makababalik</b> sa nakaraang item.</div></li>
@@ -59,6 +59,7 @@
       </div>
 
       <div style="margin-top:22px"><button class="btn big" id="btnStart">Magsimula →</button></div>
+      <p id="verTag" style="margin:18px 0 0;font-size:11px;color:#94a3b8"></p>
     </div>
   </section>
 
@@ -66,9 +67,9 @@
   <section id="s-reg" class="hide">
     <div class="card">
       <h2 style="margin:0 0 4px">Sino ka?</h2>
-      <p style="margin:0 0 6px;color:var(--ink2)">Gagamitin ito para sa buod ng resulta ng buong klase.</p>
+      <p style="margin:0 0 6px;color:var(--ink2)">Gagamitin ito para sa buod ng resulta ng buong klase, ayon sa municipality.</p>
       <div class="field"><label for="fName">Buong pangalan</label><input id="fName" autocomplete="name" placeholder="hal. Juan D. Dela Cruz"></div>
-      <div class="field"><label for="fDistrict">District</label><select id="fDistrict"><option value="">— Pumili —</option></select></div>
+      <div class="field"><label for="fDistrict">Municipality</label><select id="fDistrict"><option value="">— Pumili ng municipality —</option></select></div>
       <div class="field"><label for="fSchool">Paaralan</label><input id="fSchool" placeholder="Pangalan ng paaralan"></div>
       <div class="err" id="regErr"></div>
       <div style="display:flex;gap:10px;margin-top:6px">
@@ -130,9 +131,9 @@
   </div>
 </div>
 
-<script src="config.js?v=20261119b"></script>
-<script src="items.js?v=20261119b"></script>
-<script src="api.js?v=20261119b"></script>
+<script src="config.js?v=20261119d"></script>
+<script src="items.js?v=20261119d"></script>
+<script src="api.js?v=20261119d"></script>
 <script>
 (function(){
   const C = window.CONFIG, ITEMS = window.ITEMS, N = ITEMS.length, KEY = "nat21_state_v1";
@@ -149,6 +150,7 @@
   const mb = $("modeBadge");
   mb.textContent = Api.mode === "live" ? "LIVE · Google Sheet" : "DEMO MODE";
   mb.className = "badge " + (Api.mode === "live" ? "live" : "demo");
+  $("verTag").textContent = "Build 20261119d · " + C.DISTRICTS.length + " municipalities sa config.js · " + window.ITEMS.length + " items";
   C.DISTRICTS.forEach(d => { const o = document.createElement("option"); o.value = o.textContent = d; $("fDistrict").appendChild(o); });
 
   function save(){ localStorage.setItem(KEY, JSON.stringify(st)); }
@@ -196,7 +198,7 @@
   $("btnGo").onclick = () => {
     const name = $("fName").value.trim(), district = $("fDistrict").value, school = $("fSchool").value.trim();
     if (name.length < 3) return $("regErr").textContent = "Ilagay ang buong pangalan.";
-    if (!district) return $("regErr").textContent = "Pumili ng district.";
+    if (!district) return $("regErr").textContent = "Pumili ng municipality.";
     if (school.length < 3) return $("regErr").textContent = "Ilagay ang pangalan ng paaralan.";
     $("regErr").textContent = "";
     const id = "P" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);

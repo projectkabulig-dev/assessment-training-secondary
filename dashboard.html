@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Live Dashboard · NAT G12 21st Century Skills</title>
-<link rel="stylesheet" href="style.css?v=20261119b">
+<link rel="stylesheet" href="style.css?v=20261119d">
 <style>
   body{background:#0b1020;color:#e5e7eb;background-image:radial-gradient(900px 500px at 100% -10%,rgba(79,70,229,.35),transparent 60%),radial-gradient(800px 500px at -10% 0%,rgba(6,182,212,.22),transparent 55%)}
   .topbar{background:rgba(11,16,32,.85);border-bottom:1px solid #1f2a44}
@@ -151,8 +151,8 @@
   </div>
 
   <div class="panel" style="margin-top:16px">
-    <h3>Ayon sa district <small>nagrehistro · tapos na · average score (/15) · stuck</small></h3>
-    <div class="scrollbox" style="max-height:none"><table class="pt"><thead><tr><th>District</th><th>Nagrehistro</th><th>Sumasagot</th><th>Tapos</th><th>Avg score</th><th style="width:30%">Avg score (bar)</th><th>Stuck</th></tr></thead><tbody id="dtb"></tbody></table></div>
+    <h3>Ayon sa municipality <small>nagrehistro · tapos na · average score (/15) · stuck</small></h3>
+    <div class="scrollbox" style="max-height:none"><table class="pt"><thead><tr><th>Municipality</th><th>Nagrehistro</th><th>Sumasagot</th><th>Tapos</th><th>Avg score</th><th style="width:30%">Avg score (bar)</th><th>Stuck</th></tr></thead><tbody id="dtb"></tbody></table></div>
   </div>
 
   <div class="panel" style="margin-top:16px">
@@ -161,16 +161,16 @@
   </div>
 
   <div class="panel" style="margin-top:16px">
-    <h3>Mga participant <input class="search" id="search" placeholder="Hanapin ang pangalan, school, district…" style="margin-left:auto"></h3>
-    <div class="scrollbox"><table class="pt"><thead><tr><th>Pangalan</th><th>District</th><th>Paaralan</th><th>Status</th><th>Item</th><th>Nasagot</th><th>Score</th><th>Oras sa item</th></tr></thead><tbody id="ptb"></tbody></table></div>
+    <h3>Mga participant <input class="search" id="search" placeholder="Hanapin ang pangalan, school, municipality…" style="margin-left:auto"></h3>
+    <div class="scrollbox"><table class="pt"><thead><tr><th>Pangalan</th><th>Municipality</th><th>Paaralan</th><th>Status</th><th>Item</th><th>Nasagot</th><th>Score</th><th>Oras sa item</th></tr></thead><tbody id="ptb"></tbody></table></div>
   </div>
 </main>
 
 <script src="lib/pptxgen.bundle.js"></script>
-<script src="config.js?v=20261119b"></script>
-<script src="items.js?v=20261119b"></script>
-<script src="api.js?v=20261119b"></script>
-<script src="deck.js?v=20261119b"></script>
+<script src="config.js?v=20261119d"></script>
+<script src="items.js?v=20261119d"></script>
+<script src="api.js?v=20261119d"></script>
+<script src="deck.js?v=20261119d"></script>
 <script>
 (function(){
   const C = window.CONFIG, ITEMS = window.ITEMS, N = ITEMS.length, LIM = C.SECONDS_PER_ITEM, INACTIVE = 300;
@@ -325,7 +325,7 @@
   };
 
   $("btnCSV").onclick = () => {
-    const head = ["Name","School","District","Status","Score","English","Science","Math","TotalSecs"]
+    const head = ["Name","School","Municipality","Status","Score","English","Science","Math","TotalSecs"]
       .concat(ITEMS.map((_, i) => "Q" + (i+1))).concat(ITEMS.map((_, i) => "T" + (i+1)));
     const lines = [head].concat(DATA.rows.map(r => [r.name, r.school, r.district, r.status, r.score, r.eng, r.sci, r.math, r.totalSecs]
       .concat(r.answers).concat(r.times.map(t => t == null ? "" : t))));

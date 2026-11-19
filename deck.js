@@ -142,11 +142,11 @@
     ], { x: 9.1, y: 1.7, w: 3.7, h: 4, fontFace: FONT, fontSize: 14, color: INK, valign: "top", paraSpaceAfter: 8 });
 
     /* 5 — By district */
-    s = P.addSlide(); frame(s, "Performance by district", "Mean score out of " + N + " (chart: districts with finishers; table: all districts)");
+    s = P.addSlide(); frame(s, "Performance by municipality", "Mean score out of " + N + " (chart: municipalities with finishers; table: all municipalities)");
     const dd = A.districts;
     s.addChart(P.ChartType.bar, [{ name: "Mean score", labels: dd.map(x => x.name), values: dd.map(x => Math.round(x.mean * 10) / 10) }],
       barOpts({ x: 0.65, y: 1.5, w: 8.3, h: 5.3, chartColors: [CY], dataLabelFormatCode: "0.0", valAxisMaxVal: N, valAxisMinVal: 0, catAxisLabelFontSize: 10, catAxisLabelRotate: 315 }));
-    const trows = [[{ text: "District", options: { bold: true, color: "FFFFFF", fill: { color: IND } } }, { text: "n", options: { bold: true, color: "FFFFFF", fill: { color: IND }, align: "center" } }, { text: "Mean", options: { bold: true, color: "FFFFFF", fill: { color: IND }, align: "center" } }]]
+    const trows = [[{ text: "Municipality", options: { bold: true, color: "FFFFFF", fill: { color: IND } } }, { text: "n", options: { bold: true, color: "FFFFFF", fill: { color: IND }, align: "center" } }, { text: "Mean", options: { bold: true, color: "FFFFFF", fill: { color: IND }, align: "center" } }]]
       .concat(C.DISTRICTS.concat(dd.map(x => x.name).filter(n => !C.DISTRICTS.includes(n))).map(nm => { const x = dd.find(y => y.name === nm); return [{ text: nm }, { text: x ? String(x.n) : "0", options: { align: "center" } }, { text: x ? r1(x.mean) : "–", options: { align: "center", color: x ? INK : "94A3B8" } }]; }));
     s.addTable(trows, { x: 9.2, y: 1.6, w: 3.6, colW: [1.8, 0.7, 1.1], fontFace: FONT, fontSize: 10, color: INK, border: { type: "solid", color: "E2E8F0", pt: 0.5 }, rowH: 0.27 });
 
