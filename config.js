@@ -4,7 +4,7 @@
 window.CONFIG = {
   // I-paste dito ang Web App URL ng Google Apps Script (nagtatapos sa /exec).
   // Kapag walang laman, tatakbo ang app sa DEMO MODE (naka-save lang sa browser na ito).
-  APPS_SCRIPT_URL: "",
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxnNzAWRKMowBw3j-2UIA0zGNM8WUiX5asGsbGpzp4sWxs1_4PHyW93_9-Fg7jFqRPs/exec",
 
   TITLE: "NAT Grade 12 · 21st Century Skills",
   SUBTITLE: "Sample Online Test para sa mga School Head",
