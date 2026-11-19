@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>NAT Grade 12 · 21st Century Skills — Sample Online Test</title>
-<link rel="stylesheet" href="style.css?v=20261119d">
+<link rel="stylesheet" href="style.css?v=20261119e">
 </head>
 <body>
 
@@ -131,9 +131,9 @@
   </div>
 </div>
 
-<script src="config.js?v=20261119d"></script>
-<script src="items.js?v=20261119d"></script>
-<script src="api.js?v=20261119d"></script>
+<script src="config.js?v=20261119e"></script>
+<script src="items.js?v=20261119e"></script>
+<script src="api.js?v=20261119e"></script>
 <script>
 (function(){
   const C = window.CONFIG, ITEMS = window.ITEMS, N = ITEMS.length, KEY = "nat21_state_v1";
@@ -150,7 +150,7 @@
   const mb = $("modeBadge");
   mb.textContent = Api.mode === "live" ? "LIVE · Google Sheet" : "DEMO MODE";
   mb.className = "badge " + (Api.mode === "live" ? "live" : "demo");
-  $("verTag").textContent = "Build 20261119d · " + C.DISTRICTS.length + " municipalities sa config.js · " + window.ITEMS.length + " items";
+  $("verTag").textContent = "Build 20261119e · " + C.DISTRICTS.length + " municipalities sa config.js · " + window.ITEMS.length + " items";
   C.DISTRICTS.forEach(d => { const o = document.createElement("option"); o.value = o.textContent = d; $("fDistrict").appendChild(o); });
 
   function save(){ localStorage.setItem(KEY, JSON.stringify(st)); }
@@ -162,12 +162,25 @@
   }
   function enqueue(ev){ queue = queue.then(() => Api.sendRetry(ev, 4)); return queue; }
   function progressEv(){
-    return { event:"progress", id:st.id, current:st.idx, answers:st.answers, times:st.times, score:Api.scoreOf(st.answers).total };
+    return { event:"progress", id:st.id, name:st.name, school:st.school, district:st.district, current:st.idx, answers:st.answers, times:st.times, score:Api.scoreOf(st.answers).total };
   }
 
   /* ---------- intro / resume ---------- */
+  /* Ipadala ulit sa Google Sheet ang mga sagot na hindi pa nakarating (hal. sinagutan bago naka-set ang URL) */
+  function resyncIfNeeded(){
+    if (Api.mode !== "live" || !st || st.liveSent) return;
+    st.liveSent = true; save();
+    enqueue({ event:"register", id:st.id, name:st.name, school:st.school, district:st.district });
+    if (st.phase === "done") {
+      const sc = Api.scoreOf(st.answers);
+      enqueue({ event:"finish", id:st.id, name:st.name, school:st.school, district:st.district, answers:st.answers, times:st.times,
+                score:sc.total, eng:sc.by.English, sci:sc.by.Science, math:sc.by.Math,
+                totalSecs:st.times.reduce((a, b) => a + (b || 0), 0) });
+    } else enqueue(progressEv());
+  }
+
   function refreshIntro(){
-    load();
+    load(); resyncIfNeeded();
     const box = $("resumeBox");
     if (st && st.phase === "test") {
       box.classList.remove("hide");
@@ -203,7 +216,7 @@
     $("regErr").textContent = "";
     const id = "P" + Date.now().toString(36) + Math.random().toString(36).slice(2,6);
     st = { id, name, school, district, phase:"test", idx:0, answers:Array(N).fill(""), times:Array(N).fill(null), itemStart:Date.now(), startedAt:Date.now() };
-    save();
+    st.liveSent = true; save();
     enqueue({ event:"register", id, name, school, district });
     enqueue(progressEv());
     show("s-test"); renderItem(); startTick();
@@ -282,7 +295,7 @@
     st.phase = "done"; st.score = sc.total; st.by = sc.by;
     st.totalSecs = st.times.reduce((a, b) => a + (b || 0), 0);
     save();
-    enqueue({ event:"finish", id:st.id, answers:st.answers, times:st.times, score:sc.total,
+    enqueue({ event:"finish", id:st.id, name:st.name, school:st.school, district:st.district, answers:st.answers, times:st.times, score:sc.total,
               eng:sc.by.English, sci:sc.by.Science, math:sc.by.Math, totalSecs:st.totalSecs });
     renderResult();
   }
