@@ -2,7 +2,7 @@
    CONFIG — dito lang ang kailangang baguhin
    ========================================================== */
 window.CONFIG = {
-  // I-paste dito ang.
+  // I-paste dito ang Web App URL ng Google Apps Script (nagtatapos sa /exec).
   // Kapag walang laman, tatakbo ang app sa DEMO MODE (naka-save lang sa browser na ito).
   APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxnNzAWRKMowBw3j-2UIA0zGNM8WUiX5asGsbGpzp4sWxs1_4PHyW93_9-Fg7jFqRPs/exec",
 
@@ -14,10 +14,11 @@ window.CONFIG = {
   WARN_AT: 10,            // babala kapag ito na lang ang natitirang segundo
   CAUTION_AT: 20,         // dilaw na kulay
 
-  // Palitan kung kailangan (13 districts ng SDO Romblon)
+  // Palitan kung kailangan (lahat ng district; idagdag o alisin kung kailangan)
   DISTRICTS: [
-    "Alcantara", "Banton", "Calatrava", "Concepcion", "Corcuera", "Ferrol", "Looc",
-    "Romblon", "San Agustin", "San Andres", "San Jose", "Santa Fe", "Santa Maria"
+    "Alcantara", "Banton", "Cajidiocan", "Calatrava", "Concepcion", "Corcuera", "Ferrol", "Looc",
+    "Magdiwang", "Odiongan", "Romblon", "San Agustin", "San Andres", "San Fernando", "San Jose",
+    "Santa Fe", "Santa Maria"
   ],
 
   POLL_MS: 3000           // gaano kadalas mag-refresh ang dashboard

@@ -151,6 +151,11 @@
   </div>
 
   <div class="panel" style="margin-top:16px">
+    <h3>Ayon sa district <small>nagrehistro · tapos na · average score (/15) · stuck</small></h3>
+    <div class="scrollbox" style="max-height:none"><table class="pt"><thead><tr><th>District</th><th>Nagrehistro</th><th>Sumasagot</th><th>Tapos</th><th>Avg score</th><th style="width:30%">Avg score (bar)</th><th>Stuck</th></tr></thead><tbody id="dtb"></tbody></table></div>
+  </div>
+
+  <div class="panel" style="margin-top:16px">
     <h3>Bawat item <small>nakasagot · nasa item ngayon · stuck · i-click ang item para sa A–D</small></h3>
     <div id="items"></div>
   </div>
@@ -223,7 +228,21 @@
     $("kReg").textContent = rows.length; $("kTaking").textContent = taking.length; $("kDone").textContent = done.length;
     const pool = done.length ? done : rows.filter(r => r.status !== "registered");
     $("kAvg").textContent = pool.length ? (pool.reduce((a, r) => a + r.score, 0) / pool.length).toFixed(1) : "–";
-    renderBands(); renderItems(); renderLiveBits(); renderTable();
+    renderBands(); renderItems(); renderDistricts(); renderLiveBits(); renderTable();
+  }
+
+  function renderDistricts(){
+    const rows = DATA.rows, names = C.DISTRICTS.slice();
+    rows.forEach(r => { if (r.district && !names.includes(r.district)) names.push(r.district); });
+    $("dtb").innerHTML = names.map(d => {
+      const rs = rows.filter(r => r.district === d), st = rs.filter(r => r.status !== "registered");
+      const avg = st.length ? st.reduce((a, r) => a + r.score, 0) / st.length : null;
+      const stuck = rs.filter(r => isTaking(r) && secOn(r) > LIM && secOn(r) <= INACTIVE).length;
+      return `<tr><td><b>${esc(d)}</b></td><td>${rs.length}</td><td>${rs.filter(isTaking).length}</td><td>${rs.filter(r => r.status === "done").length}</td>
+        <td><b>${avg == null ? "–" : avg.toFixed(1)}</b></td>
+        <td><div class="prog"><i style="width:${avg == null ? 0 : avg / N * 100}%"></i></div></td>
+        <td>${stuck ? `<span class="st over">${stuck}</span>` : "–"}</td></tr>`;
+    }).join("");
   }
 
   function renderBands(){
